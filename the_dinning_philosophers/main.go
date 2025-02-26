@@ -16,6 +16,9 @@ type Philosopher struct {
 var (
 	hunger  = 3
 	eatTime = time.Second * 1
+
+	finishOrder = make([]*Philosopher, 0)
+	finishMutex = new(sync.Mutex)
 )
 
 func main() {
@@ -38,6 +41,11 @@ func main() {
 	dinner(philosophers)
 
 	fmt.Println("Dinner has been finished")
+	fmt.Println("Order of finished philosophers:")
+
+	for _, p := range finishOrder {
+		fmt.Println(p.Name)
+	}
 }
 
 func dinner(philosophers []*Philosopher) {
@@ -87,6 +95,12 @@ func dine(philosopher *Philosopher, forks map[int]*sync.Mutex, wg *sync.WaitGrou
 
 		fmt.Println(philosopher.Name, "put down the forks")
 	}
+
+	finishMutex.Lock()
+	finishOrder = append(finishOrder, philosopher)
+	finishMutex.Unlock()
+
+	fmt.Println("Finished philosopher was added to the list:", philosopher.Name)
 
 	fmt.Println(philosopher.Name, "is satiated")
 }
