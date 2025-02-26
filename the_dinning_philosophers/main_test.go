@@ -4,9 +4,11 @@ import (
 	"github.com/brianvoe/gofakeit/v6"
 	"sync"
 	"testing"
+	"time"
 )
 
 func Test_dine(t *testing.T) {
+	eatTime = time.Second * 0
 
 	philosophers := make([]*Philosopher, 4)
 	forks := make(map[int]*sync.Mutex)
@@ -38,4 +40,9 @@ func Test_dine(t *testing.T) {
 	})
 
 	wg.Wait()
+
+	if len(finishOrder) != len(philosophers) {
+		t.Logf("Expected %d, got %d\n", len(philosophers), len(finishOrder))
+		t.Fail()
+	}
 }
