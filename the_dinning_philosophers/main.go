@@ -14,13 +14,11 @@ type Philosopher struct {
 }
 
 var (
-	finishOrder = make([]*Philosopher, 0)
-	finishMutex = new(sync.Mutex)
-)
-
-var (
 	hunger  = 3
 	eatTime = time.Second * 1
+
+	finishOrder = make([]*Philosopher, 0)
+	finishMutex = new(sync.Mutex)
 )
 
 func main() {
