@@ -8,6 +8,7 @@ import (
 	"github.com/pandaemoniumplaza/goroutines/subscription_service/data"
 	"net/http"
 	"os"
+	"sync"
 	"time"
 )
 
@@ -34,4 +35,19 @@ func initRedis(connStr string) *redis.Pool {
 	}
 
 	return redisPool
+}
+
+func initMailer(wg *sync.WaitGroup) *Mailer {
+	return &Mailer{
+		Domain:      "localhost",
+		Host:        "localhost",
+		Port:        1025,
+		Encryption:  "none",
+		FromAddress: "info@mycompany.com",
+		FromName:    "info",
+		Wait:        wg,
+		MailerChan:  make(chan Message, 100),
+		ErrorChan:   make(chan error),
+		DoneChan:    make(chan bool),
+	}
 }

@@ -20,6 +20,7 @@ type Mailer struct {
 	FromAddress string
 	FromName    string
 	Wait        *sync.WaitGroup
+	MailerChan  chan Message
 	ErrorChan   chan error
 	DoneChan    chan bool
 }
@@ -36,6 +37,8 @@ type Message struct {
 }
 
 func (m *Mailer) sendMail(msg Message, errorChan chan error) {
+	defer m.Wait.Done()
+
 	if msg.Template == "" {
 		msg.Template = "mail"
 	}

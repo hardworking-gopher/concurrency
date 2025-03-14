@@ -22,19 +22,20 @@ const (
 )
 
 func main() {
-	db := initDB()
+	wg := &sync.WaitGroup{}
 
 	app := App{
-		//DB:       initDB(),
+		Wait:     wg,
 		Session:  initSession(),
-		Wait:     &sync.WaitGroup{},
-		Models:   data.New(db),
+		Mailer:   initMailer(wg),
+		Models:   data.New(initDB()),
 		InfoLog:  log.New(os.Stdout, "INFO\t", log.LstdFlags),
 		ErrorLog: log.New(os.Stdout, "ERROR\t", log.LstdFlags),
 	}
 
 	app.InfoLog.Println("starting the server")
 
+	go app.listenForMail()
 	go app.listerForShutdown()
 
 	app.serve()
@@ -67,7 +68,16 @@ func (a *App) listerForShutdown() {
 func (a *App) shutdown() {
 	a.InfoLog.Println("initiating graceful shutdown")
 
+	a.InfoLog.Println("waiting for all the emails to be sent")
+
 	a.Wait.Wait()
+
+	a.InfoLog.Println("sending stop signal to email listener")
+	a.Mailer.DoneChan <- true
+
+	close(a.Mailer.MailerChan)
+	close(a.Mailer.ErrorChan)
+	close(a.Mailer.DoneChan)
 
 	a.InfoLog.Println("closing channels")
 }
