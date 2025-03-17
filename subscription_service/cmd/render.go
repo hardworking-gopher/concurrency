@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/pandaemoniumplaza/goroutines/subscription_service/data"
 	"html/template"
 	"net/http"
 	"time"
@@ -29,7 +30,7 @@ type TemplateData struct {
 	Error         string
 	Authenticated bool
 	Now           time.Time
-	//User *data.User
+	User          *data.User
 }
 
 func (a *App) render(w http.ResponseWriter, r *http.Request, t string, data *TemplateData) {
@@ -63,16 +64,22 @@ func (a *App) render(w http.ResponseWriter, r *http.Request, t string, data *Tem
 	}
 }
 
-func (a *App) AppDefaultData(data *TemplateData, r *http.Request) *TemplateData {
-	data.Flash = a.Session.PopString(r.Context(), "flash")
-	data.Warning = a.Session.PopString(r.Context(), "warning")
-	data.Error = a.Session.PopString(r.Context(), "error")
+func (a *App) AppDefaultData(td *TemplateData, r *http.Request) *TemplateData {
+	td.Flash = a.Session.PopString(r.Context(), "flash")
+	td.Warning = a.Session.PopString(r.Context(), "warning")
+	td.Error = a.Session.PopString(r.Context(), "error")
 	if a.IsAuthenticated(r) {
-		data.Authenticated = true
+		td.Authenticated = true
+		user, ok := a.Session.Get(r.Context(), "user").(data.User)
+		if !ok {
+			a.ErrorLog.Println("Can't get user from session")
+		} else {
+			td.User = &user
+		}
 	}
-	data.Now = time.Now()
+	td.Now = time.Now()
 
-	return data
+	return td
 }
 
 func (a *App) IsAuthenticated(r *http.Request) bool {
