@@ -9,13 +9,15 @@ import (
 )
 
 type App struct {
-	Session  *scs.SessionManager
-	DB       *sql.DB
-	InfoLog  *log.Logger
-	ErrorLog *log.Logger
-	Wait     *sync.WaitGroup
-	Models   data.Models
-	Mailer   *Mailer
+	Session       *scs.SessionManager
+	DB            *sql.DB
+	InfoLog       *log.Logger
+	ErrorLog      *log.Logger
+	Wait          *sync.WaitGroup
+	Models        data.Models
+	Mailer        *Mailer
+	ErrorChan     chan error
+	ErrorChanDone chan bool
 }
 
 func (a *App) listenForMail() {
@@ -36,6 +38,9 @@ func (a *App) listenForMail() {
 }
 
 func (a *App) sendEmail(msg Message) {
-	// TODO: How to make sure if this not blocking us? Select?
-	a.Mailer.MailerChan <- msg
+	select {
+	case a.Mailer.MailerChan <- msg:
+	default:
+		a.ErrorLog.Println("can't send email due to filled channel")
+	}
 }

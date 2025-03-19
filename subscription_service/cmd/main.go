@@ -25,20 +25,34 @@ func main() {
 	wg := &sync.WaitGroup{}
 
 	app := App{
-		Wait:     wg,
-		Session:  initSession(),
-		Mailer:   initMailer(wg),
-		Models:   data.New(initDB()),
-		InfoLog:  log.New(os.Stdout, "INFO\t", log.LstdFlags),
-		ErrorLog: log.New(os.Stdout, "ERROR\t", log.LstdFlags),
+		Wait:          wg,
+		Session:       initSession(),
+		Mailer:        initMailer(wg),
+		Models:        data.New(initDB()),
+		ErrorChan:     make(chan error),
+		ErrorChanDone: make(chan bool),
+		InfoLog:       log.New(os.Stdout, "INFO\t", log.LstdFlags),
+		ErrorLog:      log.New(os.Stdout, "ERROR\t", log.LstdFlags),
 	}
 
 	app.InfoLog.Println("starting the server")
 
 	go app.listenForMail()
+	go app.listedForErrors()
 	go app.listerForShutdown()
 
 	app.serve()
+}
+
+func (a *App) listedForErrors() {
+	for {
+		select {
+		case err := <-a.ErrorChan:
+			a.ErrorLog.Println(err)
+		case <-a.ErrorChanDone:
+			return
+		}
+	}
 }
 
 func (a *App) serve() {
@@ -78,6 +92,8 @@ func (a *App) shutdown() {
 	close(a.Mailer.MailerChan)
 	close(a.Mailer.ErrorChan)
 	close(a.Mailer.DoneChan)
+	close(a.ErrorChanDone)
+	close(a.ErrorChan)
 
 	a.InfoLog.Println("closing channels")
 }
