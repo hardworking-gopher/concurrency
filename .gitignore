@@ -25,4 +25,4 @@ go.work.sum
 .env
 
 # postgres docker volume
-subscription_service/db-data
+problems/subscription_service/db-data

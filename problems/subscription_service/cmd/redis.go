@@ -5,7 +5,7 @@ import (
 	"github.com/alexedwards/scs/redisstore"
 	"github.com/alexedwards/scs/v2"
 	"github.com/gomodule/redigo/redis"
-	"github.com/pandaemoniumplaza/goroutines/subscription_service/data"
+	"github.com/pandaemoniumplaza/concurrency/problems/subscription_service/data"
 	"net/http"
 	"os"
 	"sync"

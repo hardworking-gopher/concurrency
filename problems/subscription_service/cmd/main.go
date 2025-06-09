@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/pandaemoniumplaza/goroutines/subscription_service/data"
+	"github.com/pandaemoniumplaza/concurrency/problems/subscription_service/data"
 	"log"
 	"net/http"
 	"os"

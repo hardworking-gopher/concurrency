@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/pandaemoniumplaza/goroutines/subscription_service/data"
+	"github.com/pandaemoniumplaza/concurrency/problems/subscription_service/data"
 	"github.com/phpdave11/gofpdf"
 	"github.com/phpdave11/gofpdf/contrib/gofpdi"
 	"html/template"
