@@ -3,13 +3,16 @@ package main
 import (
 	"fmt"
 	"sync"
-	"sync/atomic"
 )
+
+// A mutex is a synchronisation primitive that grants access to a shared resource,
+// ensuring that only one goroutine can operate on it at a time. It is used for
+// more complex data structures, as opposed to atomic package which provides
+// synchronisation for primitive data types
 
 type Container struct {
 	mu sync.Mutex
 	m  map[string]int
-	m2 map[string]atomic.Int32
 }
 
 func main() {

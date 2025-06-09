@@ -4,8 +4,8 @@ import (
 	"fmt"
 )
 
-// We can use idiomatic way of handling access to data in
-// concurrent environment by using goroutine that owns the data
+// We can use idiomatic way of handling access to the data in
+// concurrent environment by introducing goroutine that owns the data
 
 type WriteOp struct {
 	Key  string
