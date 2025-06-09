@@ -3,7 +3,7 @@ package main
 import (
 	"database/sql"
 	"github.com/alexedwards/scs/v2"
-	"github.com/pandaemoniumplaza/goroutines/subscription_service/data"
+	"github.com/pandaemoniumplaza/concurrency/problems/subscription_service/data"
 	"log"
 	"sync"
 )
