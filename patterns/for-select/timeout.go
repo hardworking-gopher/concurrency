@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// We can time out either entire for loop or single iteration by using time.After
+// We can time out either the entire for loop or single iteration by using time.After
 
 func main() {
 	c1 := make(chan struct{})
