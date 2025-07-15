@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-// We can use select to either send a message to a channel or continue if sending operation will be blocked
+// We can use select to either send a message to a channel or continue if the sending operation will be blocked
 
 func main() {
 	c := make(chan int)
